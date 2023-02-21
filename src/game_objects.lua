@@ -40,6 +40,20 @@ GAME_OBJECT_DEFS = {
         } 
     },
     ['pot'] = {
-        -- TODO
+        type = 'pot',
+        texture = 'tiles',
+        frame = 14,
+        width = 16,
+        height = 16,
+        solid = true,
+        defaultState = 'onGround',
+        states = {
+            ['onGround'] = {
+                frame = 14
+            },
+            ['broken'] = {
+                frame = 52
+            }
+        }
     }
 }
