@@ -85,7 +85,36 @@ function EntityWalkState:processAI(params, dt)
         end
     end
 
+
+    for k, object in pairs(room.objects) do
+        if self.entity:collides(object) then
+            if object.solid then
+                if self.entity.direction == 'up' then
+                    self.entity.y = self.entity.y + self.entity.walkSpeed * dt
+                    self.entity.direction = 'down'
+                    self.entity:changeAnimation('walk-' .. tostring(self.entity.direction))
+                end
+                if self.entity.direction == 'down' then
+                    self.entity.y = self.entity.y - self.entity.walkSpeed  * dt
+                    self.entity.direction = 'up'
+                    self.entity:changeAnimation('walk-' .. tostring(self.entity.direction))
+                end
+                if self.entity.direction == 'left' then
+                    self.entity.x = self.entity.x + self.entity.walkSpeed  * dt
+                    self.entity.direction = 'right'
+                    self.entity:changeAnimation('walk-' .. tostring(self.entity.direction))
+                end
+                if self.entity.direction == 'right' then
+                    self.entity.x = self.entity.x - self.entity.walkSpeed  * dt
+                    self.entity.direction = 'left'
+                    self.entity:changeAnimation('walk-' .. tostring(self.entity.direction))
+                end
+            end
+        end
+    end
+
     self.movementTimer = self.movementTimer + dt
+
 end
 
 function EntityWalkState:render()
@@ -93,8 +122,8 @@ function EntityWalkState:render()
     love.graphics.draw(gTextures[anim.texture], gFrames[anim.texture][anim:getCurrentFrame()],
         math.floor(self.entity.x - self.entity.offsetX), math.floor(self.entity.y - self.entity.offsetY))
     
-    -- debug code
-    -- love.graphics.setColor(255, 0, 255, 255)
-    -- love.graphics.rectangle('line', self.entity.x, self.entity.y, self.entity.width, self.entity.height)
-    -- love.graphics.setColor(255, 255, 255, 255)
+    -- debug code, Comment out these lines
+    love.graphics.setColor(1, 0, 1, 1)
+    love.graphics.rectangle('line', self.entity.x, self.entity.y, self.entity.width, self.entity.height)
+    love.graphics.setColor(1, 1, 1, 1)
 end
