@@ -69,6 +69,71 @@ ENTITY_DEFS = {
                 interval = 0.05,
                 looping = false,
                 texture = 'character-swing-sword'
+            },
+            ['lift-up'] = {
+                frames = {7, 8, 9},
+                interval = 0.2,
+                looping = false,
+                texture = 'character-pot-lift'
+            },
+            ['lift-down'] = {
+                frames = {1, 2, 3},
+                interval = 0.2,
+                looping = false,
+                texture = 'character-pot-lift'
+            },
+            ['lift-left'] = {
+                frames = {10, 11, 12},
+                interval = 0.2,
+                looping = false,
+                texture = 'character-pot-lift'
+            },
+            ['lift-right'] = {
+                frames = {4, 5, 6},
+                interval = 0.2,
+                looping = false,
+                texture = 'character-pot-lift'
+            },
+            ['carrying-up'] = {
+                frames = {9, 10, 11, 12},
+                interval = 0.05,
+                looping = false,
+                texture = 'character-pot-walk'
+            },
+            ['carrying-down'] = {
+                frames = {1, 2, 3, 4},
+                interval = 0.05,
+                looping = false,
+                texture = 'character-pot-walk'
+            },
+            ['carrying-left'] = {
+                frames = {13, 14, 15, 16},
+                interval = 0.05,
+                looping = false,
+                texture = 'character-pot-walk'
+            },
+            ['carrying-right'] = {
+                frames = {5, 6, 7, 8},
+                interval = 0.05,
+                looping = false,
+                texture = 'character-pot-walk'
+            },
+            ['idle-carry-up'] = {
+                frames = {9},
+                texture = 'character-pot-walk'
+            }
+            ,
+            ['idle-carry-down'] = {
+                frames = {1},
+                texture = 'character-pot-walk'
+            },
+            ['idle-carry-left'] = {
+                frames = {13},
+                texture = 'character-pot-walk'
+            },
+            ['idle-carry-right'] = {
+                frames = {5},
+                texture = 'character-pot-walk'
             }
         }
     },

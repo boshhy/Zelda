@@ -22,6 +22,7 @@ function GameObject:init(def, x, y)
     self.defaultState = def.defaultState
     self.state = self.defaultState
     self.states = def.states
+    self.liftable = def.liftable
 
     -- dimensions
     self.x = x
@@ -39,6 +40,11 @@ end
 
 function GameObject:update(dt)
 
+end
+
+function GameObject:collides(target)
+    return not (self.x + self.width < target.x or self.x > target.x + target.width or
+                self.y + self.height < target.y or self.y > target.y + target.height)
 end
 
 function GameObject:render(adjacentOffsetX, adjacentOffsetY)
