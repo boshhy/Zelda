@@ -67,12 +67,27 @@ function PlayerPickUpPotState:update(dt)
 
             if self.canTween then
                 self.canTween = false
+                local y = 8
+                local x = 1
+                --local x = 8
+                if self.player.direction == 'up' then
+                    y = 9
+                    x = 0
+                end
+                if self.player.direction == 'down' then
+                    y = 7
+                    x = 0
+                end
+                if self.player.direction == 'right' then
+                    x = -1
+                end
+                
                 Timer.tween(0.4, {
-                    [self.player.potBeingCarried] = {x = self.player.x,y = self.player.y - 4}
+                    [self.player.potBeingCarried] = {x = self.player.x - x ,y = self.player.y - 4}
                 })
                 :finish(function()
                     Timer.tween(0.2, {
-                    [self.player.potBeingCarried] = {y = self.player.y - 8}
+                    [self.player.potBeingCarried] = {y = self.player.y - y}
                     })
                 end)
             end

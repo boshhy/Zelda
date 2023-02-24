@@ -31,8 +31,12 @@ function PlayerCarryingState:update(dt)
     EntityWalkState.update(self, dt)
 
     self.entity.potBeingCarried.x = self.entity.x
-    self.entity.potBeingCarried.y = self.entity.y - 8
-    -- if love.keyboard.wasPressed('space') then
+    if self.entity.currentAnimation.bob == true then
+        self.entity.potBeingCarried.y = self.entity.y - 8
+    else
+        self.entity.potBeingCarried.y = self.entity.y - 9
+    end
+        -- if love.keyboard.wasPressed('space') then
     --     self.entity:changeState('swing-sword')
     -- end
     -- TODO change to throw animation
