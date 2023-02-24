@@ -47,6 +47,7 @@ GAME_OBJECT_DEFS = {
         height = 16,
         solid = true,
         liftable = true,
+        beingCarried = false,
         defaultState = 'onGround',
         states = {
             ['onGround'] = {

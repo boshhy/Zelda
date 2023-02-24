@@ -23,6 +23,7 @@ function GameObject:init(def, x, y)
     self.state = self.defaultState
     self.states = def.states
     self.liftable = def.liftable
+    self.beingCarried = def.beingCarried or false
 
     -- dimensions
     self.x = x
@@ -56,8 +57,8 @@ function GameObject:render(adjacentOffsetX, adjacentOffsetY)
             self.x + adjacentOffsetX, self.y + adjacentOffsetY)
     end
 
-    -- Delete these lines
-    love.graphics.setColor(1, 0, 1, 1)
-    love.graphics.rectangle('line', self.x, self.y, self.width, self.height)
-    love.graphics.setColor(1, 1, 1, 1)
+    -- TODO Delete these lines
+    -- love.graphics.setColor(1, 0, 1, 1)
+    -- love.graphics.rectangle('line', self.x, self.y, self.width, self.height)
+    -- love.graphics.setColor(1, 1, 1, 1)
 end

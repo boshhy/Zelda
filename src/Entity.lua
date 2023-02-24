@@ -40,6 +40,8 @@ function Entity:init(def)
 
     self.dead = false
     self.pickedUp = false
+
+    self.potBeingCarried = nil
 end
 
 function Entity:createAnimations(animations)

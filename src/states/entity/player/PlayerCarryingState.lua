@@ -11,6 +11,7 @@ function PlayerCarryingState:init(player, dungeon)
 end
 
 function PlayerCarryingState:update(dt)
+
     if love.keyboard.isDown('left') then
         self.entity.direction = 'left'
         self.entity:changeAnimation('carrying-left')
@@ -28,12 +29,18 @@ function PlayerCarryingState:update(dt)
     end
 
     EntityWalkState.update(self, dt)
+
+    self.entity.potBeingCarried.x = self.entity.x
+    self.entity.potBeingCarried.y = self.entity.y - 8
     -- if love.keyboard.wasPressed('space') then
     --     self.entity:changeState('swing-sword')
     -- end
     -- TODO change to throw animation
     if love.keyboard.wasPressed('k') then
         self.entity.carrying = false
+        self.entity.potBeingCarried.beingCarried = false
+        self.entity.potBeingCarried.solid = true
+        self.entity.potBeingCarried = nil
         self.entity:changeState('walk')
     end
 

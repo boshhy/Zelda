@@ -59,6 +59,9 @@ function PlayerPickUpPotState:update(dt)
     -- check if hitbox collides with any objects in the scene
     for k, object in pairs(self.dungeon.currentRoom.objects) do
         if object:collides(self.liftHitbox) and object.liftable then
+            object.solid = false
+            object.beingCarried = true
+            self.player.potBeingCarried = object
             self.player.pickedUp = true
         end
     end
@@ -88,9 +91,9 @@ function PlayerPickUpPotState:render()
     -- debug for player and hurtbox collision rects VV
     --
 
-    love.graphics.setColor(1, 0, 1, 1)
-    love.graphics.rectangle('line', self.player.x, self.player.y, self.player.width, self.player.height)
-    love.graphics.rectangle('line', self.liftHitbox.x, self.liftHitbox.y,
-        self.liftHitbox.width, self.liftHitbox.height)
-    love.graphics.setColor(1, 1, 1, 1)
+    -- love.graphics.setColor(1, 0, 1, 1)
+    -- love.graphics.rectangle('line', self.player.x, self.player.y, self.player.width, self.player.height)
+    -- love.graphics.rectangle('line', self.liftHitbox.x, self.liftHitbox.y,
+    --     self.liftHitbox.width, self.liftHitbox.height)
+    -- love.graphics.setColor(1, 1, 1, 1)
 end
