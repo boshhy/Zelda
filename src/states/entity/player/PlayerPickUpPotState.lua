@@ -8,6 +8,7 @@ function PlayerPickUpPotState:init(player, dungeon)
     -- render offset for spaced character sprite
     self.player.offsetY = 5
     self.player.offsetX = 0
+    self.canTween = true
 
     local direction = self.player.direction
     local hitboxX, hitboxY, hitboxWidth, hitboxHeight
@@ -63,12 +64,25 @@ function PlayerPickUpPotState:update(dt)
             object.beingCarried = true
             self.player.potBeingCarried = object
             self.player.pickedUp = true
+
+            if self.canTween then
+                self.canTween = false
+                Timer.tween(0.4, {
+                    [self.player.potBeingCarried] = {x = self.player.x,y = self.player.y - 4}
+                })
+                :finish(function()
+                    Timer.tween(0.2, {
+                    [self.player.potBeingCarried] = {y = self.player.y - 8}
+                    })
+                end)
+            end
         end
     end
     
     -- if we've fully elapsed through one cycle of animation, change back to idle state
     if self.player.currentAnimation.timesPlayed > 0 then
         self.player.currentAnimation.timesPlayed = 0
+        self.canTween = true
         if self.player.pickedUp then
             self.player.pickedUp = false
             self.player.carrying = true
