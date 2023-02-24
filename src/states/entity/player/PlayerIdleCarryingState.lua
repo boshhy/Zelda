@@ -29,12 +29,6 @@ function PlayerIdleCarryingState:update(dt)
         self.entity.potBeingCarried.beingCarried = false
         self.entity.potBeingCarried.solid = true
         self.entity.potBeingCarried.thrown = true
-        projectile = Projectile(
-            self.entity.direction,
-            self.entity.potBeingCarried,
-            self.room
-        )
-        --table.insert(self.room.projectiles, projectile)
         self.entity.potBeingCarried = nil
         
         self.entity:changeState('idle')

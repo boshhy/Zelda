@@ -31,6 +31,9 @@ function Room:init(player)
     table.insert(self.doorways, Doorway('right', false, self))
 
     self.projectiles = {}
+    self.hitEntities = {}
+    self.hitObjects = {}
+    self.destroyedProjectiles = {}
 
     -- reference to player for collisions, etc.
     self.player = player
@@ -109,15 +112,17 @@ function Room:generateObjects()
     table.insert(self.objects, switch)
 
     -- insert pot into map
-    local pot = GameObject(
-        GAME_OBJECT_DEFS['pot'],
-        math.random(MAP_RENDER_OFFSET_X + TILE_SIZE,
-                    VIRTUAL_WIDTH - TILE_SIZE * 2 - 16),
-        math.random(MAP_RENDER_OFFSET_Y + TILE_SIZE,
-                    VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 16)
-    )
+    for i = 1, 10 do
+        local pot = GameObject(
+            GAME_OBJECT_DEFS['pot'],
+            math.random(MAP_RENDER_OFFSET_X + TILE_SIZE,
+                        VIRTUAL_WIDTH - TILE_SIZE * 2 - 16),
+            math.random(MAP_RENDER_OFFSET_Y + TILE_SIZE,
+                        VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 16)
+        )
 
-    table.insert(self.objects, pot)
+        table.insert(self.objects, pot)
+    end
 end
 
 --[[
@@ -173,6 +178,8 @@ function Room:update(dt)
         -- remove entity from the table if health is <= 0
         if entity.health <= 0 and not entity.dead then
             entity.dead = true
+            entity.x = 500
+            entity.y = 500
             local spawingHeart = math.random(5) == 1 and true or false
             if spawingHeart then
                 local heart = GameObject(GAME_OBJECT_DEFS['heart'],
@@ -237,7 +244,39 @@ function Room:update(dt)
 
     for k, projectile in pairs(self.projectiles) do
         projectile:update(dt)
+        for j, entity in pairs(self.entities) do
+            if projectile:collides(entity) then
+                entity.dead = true
+                entity.x = 500
+                entity.y = 500
+                --table.insert(self.hitEntities, j)
+                projectile.hitSomething = true
+            end
+        end
+        
+        for l, object in pairs(self.objects) do
+            if projectile:collides(object) and object.type ~= 'switch' then
+                table.insert(self.hitObjects, l)
+                projectile.hitSomething = true
+            end
+        end
+
+        if projectile.hitSomething then
+            table.insert(self.destroyedProjectiles, k)
+        end
+
     end
+
+    for i = #self.destroyedProjectiles, 1, -1 do
+        table.remove(self.projectiles, self.destroyedProjectiles[i])
+    end
+
+    for i = #self.hitObjects, 1, -1 do
+        table.remove(self.objects, self.hitObjects[i])
+    end
+    -- self.hitEntities = {}
+    self.hitObjects = {}
+    self.destroyedProjectiles = {}
 end
 
 function Room:render()
@@ -266,9 +305,9 @@ function Room:render()
         if not entity.dead then entity:render(self.adjacentOffsetX, self.adjacentOffsetY) end
     end
 
-    for k, projectile in pairs(self.projectiles) do
-        projectile:render(self.adjacentOffsetX, self.adjacentOffsetY)
-    end
+    -- for k, projectile in pairs(self.projectiles) do
+    --     projectile:render(self.adjacentOffsetX, self.adjacentOffsetY)
+    -- end
 
     -- stencil out the door arches so it looks like the player is going through
     love.graphics.stencil(function()
@@ -297,6 +336,10 @@ function Room:render()
         if self.player.carrying or self.player.pickedUp then
             self.player.potBeingCarried:render(self.adjacentOffsetX, self.adjacentOffsetY)
         end
+    end
+
+    for k, projectile in pairs(self.projectiles) do
+        projectile:render(self.adjacentOffsetX, self.adjacentOffsetY)
     end
 
     love.graphics.setStencilTest()

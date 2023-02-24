@@ -96,25 +96,25 @@ ENTITY_DEFS = {
             },
             ['carrying-up'] = {
                 frames = {9, 10, 11, 12},
-                interval = 0.05,
+                interval = 0.15,
                 looping = false,
                 texture = 'character-pot-walk'
             },
             ['carrying-down'] = {
                 frames = {1, 2, 3, 4},
-                interval = 0.05,
+                interval = 0.15,
                 looping = false,
                 texture = 'character-pot-walk'
             },
             ['carrying-left'] = {
                 frames = {13, 14, 15, 16},
-                interval = 0.05,
+                interval = 0.15,
                 looping = false,
                 texture = 'character-pot-walk'
             },
             ['carrying-right'] = {
                 frames = {5, 6, 7, 8},
-                interval = 0.05,
+                interval = 0.15,
                 looping = false,
                 texture = 'character-pot-walk'
             },

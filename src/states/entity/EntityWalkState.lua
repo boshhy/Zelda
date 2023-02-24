@@ -123,7 +123,7 @@ function EntityWalkState:render()
         math.floor(self.entity.x - self.entity.offsetX), math.floor(self.entity.y - self.entity.offsetY))
     
     -- debug code, Comment out these lines
-    -- love.graphics.setColor(1, 0, 1, 1)
-    -- love.graphics.rectangle('line', self.entity.x, self.entity.y, self.entity.width, self.entity.height)
-    -- love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.setColor(1, 0, 1, 1)
+    love.graphics.rectangle('line', self.entity.x, self.entity.y, self.entity.width, self.entity.height)
+    love.graphics.setColor(1, 1, 1, 1)
 end
