@@ -30,6 +30,8 @@ function Room:init(player)
     table.insert(self.doorways, Doorway('left', false, self))
     table.insert(self.doorways, Doorway('right', false, self))
 
+    self.projectiles = {}
+
     -- reference to player for collisions, etc.
     self.player = player
 
@@ -40,6 +42,7 @@ function Room:init(player)
     -- used for drawing when this room is the next room, adjacent to the active
     self.adjacentOffsetX = 0
     self.adjacentOffsetY = 0
+
 end
 
 --[[
@@ -219,6 +222,22 @@ function Room:update(dt)
             end
         end
     end
+
+    for k, object in pairs(self.objects) do
+        if object.thrown then
+            project = Projectile(
+                self.player.direction,
+                object,
+                self
+            )
+            table.insert(self.projectiles, project)
+            table.remove(self.objects, k)
+        end
+    end
+
+    for k, projectile in pairs(self.projectiles) do
+        projectile:update(dt)
+    end
 end
 
 function Room:render()
@@ -245,6 +264,10 @@ function Room:render()
 
     for k, entity in pairs(self.entities) do
         if not entity.dead then entity:render(self.adjacentOffsetX, self.adjacentOffsetY) end
+    end
+
+    for k, projectile in pairs(self.projectiles) do
+        projectile:render(self.adjacentOffsetX, self.adjacentOffsetY)
     end
 
     -- stencil out the door arches so it looks like the player is going through

@@ -24,6 +24,7 @@ function GameObject:init(def, x, y)
     self.states = def.states
     self.liftable = def.liftable
     self.beingCarried = def.beingCarried or false
+    self.thrown = false
 
     -- dimensions
     self.x = x
@@ -51,10 +52,11 @@ end
 function GameObject:render(adjacentOffsetX, adjacentOffsetY)
     if self.type == 'heart' then
         love.graphics.draw(gTextures[self.texture], gFrames[self.texture][self.states[self.state].frame or self.frame],
-            self.x + adjacentOffsetX, self.y + adjacentOffsetY, 0, 0.5)
+            math.floor(self.x + adjacentOffsetX), math.floor(self.y + adjacentOffsetY), 0, 0.5)
     else
-        love.graphics.draw(gTextures[self.texture], gFrames[self.texture][self.states[self.state].frame or self.frame],
-            self.x + adjacentOffsetX, self.y + adjacentOffsetY)
+        love.graphics.draw(gTextures[self.texture], gFrames[self.texture][self.states[
+            self.state].frame or self.frame],
+            math.floor(self.x + adjacentOffsetX), math.floor(self.y + adjacentOffsetY))
     end
 
     -- TODO Delete these lines

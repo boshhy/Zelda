@@ -1,7 +1,8 @@
 
 PlayerIdleCarryingState = Class{__includes = EntityIdleState}
 
-function PlayerIdleCarryingState:enter(params)
+function PlayerIdleCarryingState:enter(player,dungeon)
+    
     
     -- render offset for spaced character sprite (negated in render function of state)
     self.entity.offsetY = 5
@@ -27,7 +28,15 @@ function PlayerIdleCarryingState:update(dt)
         self.entity.carrying = false
         self.entity.potBeingCarried.beingCarried = false
         self.entity.potBeingCarried.solid = true
+        self.entity.potBeingCarried.thrown = true
+        projectile = Projectile(
+            self.entity.direction,
+            self.entity.potBeingCarried,
+            self.room
+        )
+        --table.insert(self.room.projectiles, projectile)
         self.entity.potBeingCarried = nil
+        
         self.entity:changeState('idle')
     end
 end
