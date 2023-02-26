@@ -167,7 +167,7 @@ ENTITY_DEFS = {
             },
             ['idle-up'] = {
                 frames = {47}
-            }
+            },
         }
     },
     ['slime'] = {

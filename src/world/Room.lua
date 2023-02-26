@@ -34,6 +34,7 @@ function Room:init(player)
     self.hitEntities = {}
     self.hitObjects = {}
     self.destroyedProjectiles = {}
+    self.hitThings = {}
 
     -- reference to player for collisions, etc.
     self.player = player
@@ -246,9 +247,13 @@ function Room:update(dt)
         projectile:update(dt)
         for j, entity in pairs(self.entities) do
             if projectile:collides(entity) then
-                entity.dead = true
-                entity.x = 500
-                entity.y = 500
+                --entity.walkSpeed = 0
+                entity:changeState('idle')
+                Timer.after(0.4, function ()
+                    entity.dead = true
+                    entity.x = 500
+                    entity.y = 500
+                end)
                 --table.insert(self.hitEntities, j)
                 projectile.hitSomething = true
             end
@@ -256,12 +261,28 @@ function Room:update(dt)
         
         for l, object in pairs(self.objects) do
             if projectile:collides(object) and object.type ~= 'switch' then
+                object.state = 'half'
+                local hit = HitObject(
+                    object,
+                    self
+                )
+                table.insert(self.hitThings, hit)
                 table.insert(self.hitObjects, l)
                 projectile.hitSomething = true
             end
         end
 
+        if projectile:traveledTooFar(dt) then
+            projectile.hitSomething = true
+        end
+
         if projectile.hitSomething then
+            projectile.state = 'half'
+            local hit = HitObject(
+                projectile,
+                self
+            )
+            table.insert(self.hitThings, projectile)
             table.insert(self.destroyedProjectiles, k)
         end
 
@@ -274,6 +295,16 @@ function Room:update(dt)
     for i = #self.hitObjects, 1, -1 do
         table.remove(self.objects, self.hitObjects[i])
     end
+
+    for k, hitThing in pairs(self.hitThings) do
+        Timer.after(0.2, function ()
+            hitThing.state = 'broken'
+            Timer.after(0.2, function ()
+                table.remove(self.hitThings, k)
+            end)
+        end)
+    end 
+
     -- self.hitEntities = {}
     self.hitObjects = {}
     self.destroyedProjectiles = {}
@@ -340,6 +371,10 @@ function Room:render()
 
     for k, projectile in pairs(self.projectiles) do
         projectile:render(self.adjacentOffsetX, self.adjacentOffsetY)
+    end
+
+    for k, brokenThing in pairs(self.hitThings) do
+        brokenThing:render(self.adjacentOffsetX, self.adjacentOffsetY)
     end
 
     love.graphics.setStencilTest()

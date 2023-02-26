@@ -53,6 +53,9 @@ GAME_OBJECT_DEFS = {
             ['onGround'] = {
                 frame = 14
             },
+            ['half'] = {
+                frame = 54
+            },
             ['broken'] = {
                 frame = 52
             }

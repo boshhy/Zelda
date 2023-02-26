@@ -18,6 +18,7 @@ require 'src/Hitbox'
 require 'src/Player'
 require 'src/StateMachine'
 require 'src/Util'
+require 'src/HitObject'
 
 require 'src/world/Doorway'
 require 'src/world/Dungeon'
@@ -34,6 +35,7 @@ require 'src/states/entity/player/PlayerWalkState'
 require 'src/states/entity/player/PlayerPickUpPotState'
 require 'src/states/entity/player/PlayerCarryingState'
 require 'src/states/entity/player/PlayerIdleCarryingState'
+
 
 require 'src/states/game/GameOverState'
 require 'src/states/game/PlayState'
