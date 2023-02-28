@@ -247,14 +247,15 @@ function Room:update(dt)
         projectile:update(dt)
         for j, entity in pairs(self.entities) do
             if projectile:collides(entity) then
-                entity.walkSpeed = 0
-                entity:changeAnimation('dead')
-                --entity:changeState('idle')
-                Timer.after(0.4, function ()
-                    entity.dead = true
-                    entity.x = 500
-                    entity.y = 500
-                end)
+                entity:damage(1)
+                -- entity.walkSpeed = 0
+                -- entity:changeAnimation('dead')
+                -- --entity:changeState('idle')
+                -- Timer.after(0.4, function ()
+                --     entity.dead = true
+                --     entity.x = 500
+                --     entity.y = 500
+                -- end)
                 --table.insert(self.hitEntities, j)
                 projectile.hitSomething = true
             end
