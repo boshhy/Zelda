@@ -220,6 +220,7 @@ function Room:update(dt)
                 )
 
                 heart.onConsume = function(player, objects, k)
+                    gSounds['pickup']:play()
                     player:heal(2)
                     player.health = math.min(player.health, 6)
                     table.remove(objects, k)
