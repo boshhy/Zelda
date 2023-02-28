@@ -168,6 +168,10 @@ ENTITY_DEFS = {
             ['idle-up'] = {
                 frames = {47}
             },
+            ['dead'] = {
+                frames = {23, 47, 35, 11},
+                interval = 0.1
+            }
         }
     },
     ['slime'] = {
@@ -200,6 +204,10 @@ ENTITY_DEFS = {
             },
             ['idle-up'] = {
                 frames = {86}
+            },
+            ['dead'] = {
+                frames = {62, 86, 74, 50},
+                interval = 0.1
             }
         }
     },
@@ -237,6 +245,10 @@ ENTITY_DEFS = {
             ['idle-up'] = {
                 frames = {88, 89, 90, 89},
                 interval = 0.2
+            },
+            ['dead'] = {
+                frames = {65, 89, 77, 53},
+                interval = 0.1
             }
         }
     },
@@ -270,6 +282,10 @@ ENTITY_DEFS = {
             },
             ['idle-up'] = {
                 frames = {92}
+            },
+            ['dead'] = {
+                frames = {68, 92, 80, 56},
+                interval = 0.1
             }
         }
     },
@@ -303,6 +319,10 @@ ENTITY_DEFS = {
             },
             ['idle-up'] = {
                 frames = {95}
+            },
+            ['dead'] = {
+                frames = {71, 95, 83, 59},
+                interval = 0.1
             }
         }
     }
