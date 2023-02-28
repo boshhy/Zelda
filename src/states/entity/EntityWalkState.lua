@@ -66,6 +66,32 @@ function EntityWalkState:processAI(params, dt)
     local room = params.room
     local directions = {'left', 'right', 'up', 'down'}
 
+    for k, object in pairs(room.objects) do
+        if self.entity:collides(object) and object.solid then
+            if self.entity.direction == 'up' then
+                self.entity.y = self.entity.y + self.entity.walkSpeed * dt
+                self.entity.direction = 'down'
+                self.entity:changeAnimation('walk-' .. tostring(self.entity.direction))
+            
+            elseif self.entity.direction == 'down' then
+                self.entity.y = self.entity.y - self.entity.walkSpeed  * dt
+                self.entity.direction = 'up'
+                self.entity:changeAnimation('walk-' .. tostring(self.entity.direction))
+            
+            elseif self.entity.direction == 'left' then
+                self.entity.x = self.entity.x + self.entity.walkSpeed  * dt
+                self.entity.direction = 'right'
+                self.entity:changeAnimation('walk-' .. tostring(self.entity.direction))
+            
+            elseif self.entity.direction == 'right' then
+                self.entity.x = self.entity.x - self.entity.walkSpeed  * dt
+                self.entity.direction = 'left'
+                self.entity:changeAnimation('walk-' .. tostring(self.entity.direction))
+            end
+            self.entity.bumped = true
+        end
+    end
+
     if self.moveDuration == 0 or self.bumped then
         
         -- set an initial move duration and direction
@@ -86,32 +112,7 @@ function EntityWalkState:processAI(params, dt)
     end
 
 
-    for k, object in pairs(room.objects) do
-        if self.entity:collides(object) then
-            if object.solid then
-                if self.entity.direction == 'up' then
-                    self.entity.y = self.entity.y + self.entity.walkSpeed * dt
-                    self.entity.direction = 'down'
-                    self.entity:changeAnimation('walk-' .. tostring(self.entity.direction))
-                end
-                if self.entity.direction == 'down' then
-                    self.entity.y = self.entity.y - self.entity.walkSpeed  * dt
-                    self.entity.direction = 'up'
-                    self.entity:changeAnimation('walk-' .. tostring(self.entity.direction))
-                end
-                if self.entity.direction == 'left' then
-                    self.entity.x = self.entity.x + self.entity.walkSpeed  * dt
-                    self.entity.direction = 'right'
-                    self.entity:changeAnimation('walk-' .. tostring(self.entity.direction))
-                end
-                if self.entity.direction == 'right' then
-                    self.entity.x = self.entity.x - self.entity.walkSpeed  * dt
-                    self.entity.direction = 'left'
-                    self.entity:changeAnimation('walk-' .. tostring(self.entity.direction))
-                end
-            end
-        end
-    end
+
 
     self.movementTimer = self.movementTimer + dt
 
@@ -123,7 +124,7 @@ function EntityWalkState:render()
         math.floor(self.entity.x - self.entity.offsetX), math.floor(self.entity.y - self.entity.offsetY))
     
     -- debug code, Comment out these lines
-    -- love.graphics.setColor(1, 0, 1, 1)
-    -- love.graphics.rectangle('line', self.entity.x, self.entity.y, self.entity.width, self.entity.height)
-    -- love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.setColor(1, 0, 1, 1)
+    love.graphics.rectangle('line', self.entity.x, self.entity.y, self.entity.width, self.entity.height)
+    love.graphics.setColor(1, 1, 1, 1)
 end

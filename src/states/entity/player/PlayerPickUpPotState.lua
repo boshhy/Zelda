@@ -47,8 +47,7 @@ function PlayerPickUpPotState:enter(params)
 
     -- restart sword swing sound for rapid swinging
     -- TODO change sound to pick up sound
-    gSounds['sword']:stop()
-    gSounds['sword']:play()
+    gSounds['lift']:play()
 
     -- restart sword swing animation
     self.player.currentAnimation:refresh()

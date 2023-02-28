@@ -12,6 +12,9 @@ function Room:init(player)
     self.width = MAP_WIDTH
     self.height = MAP_HEIGHT
 
+    -- reference to player for collisions, etc.
+    self.player = player
+
     self.tiles = {}
     self:generateWallsAndFloors()
 
@@ -36,8 +39,6 @@ function Room:init(player)
     self.destroyedProjectiles = {}
     self.hitThings = {}
 
-    -- reference to player for collisions, etc.
-    self.player = player
 
     -- used for centering the dungeon rendering
     self.renderOffsetX = MAP_RENDER_OFFSET_X
@@ -58,7 +59,8 @@ function Room:generateEntities()
     for i = 1, 10 do
         local type = types[math.random(#types)]
 
-        table.insert(self.entities, Entity {
+        
+        local entity = Entity({
             animations = ENTITY_DEFS[type].animations,
             walkSpeed = ENTITY_DEFS[type].walkSpeed or 20,
 
@@ -73,13 +75,27 @@ function Room:generateEntities()
 
             health = 1
         })
-
-        self.entities[i].stateMachine = StateMachine {
-            ['walk'] = function() return EntityWalkState(self.entities[i]) end,
-            ['idle'] = function() return EntityIdleState(self.entities[i]) end
+        
+        entity.stateMachine = StateMachine {
+            ['walk'] = function() return EntityWalkState(entity) end,
+            ['idle'] = function() return EntityIdleState(entity) end
         }
 
-        self.entities[i]:changeState('walk')
+        entity:changeState('walk')
+        
+        for k, other in pairs(self.entities) do
+            if entity:collides(other) then
+                goto continue
+            end
+        end
+
+
+        if self.player:collides(entity) then
+            goto continue
+        end
+
+        table.insert(self.entities, entity)
+        ::continue:: 
     end
 end
 
@@ -122,7 +138,24 @@ function Room:generateObjects()
                         VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 16)
         )
 
+        for k, object in pairs(self.objects) do
+            if pot:collides(object) then
+                goto continue
+            end
+        end
+
+        for k, entity in pairs(self.entities) do
+            if pot:collides(entity) then
+                goto continue
+            end
+        end
+
+        if self.player:collides(pot) then
+            goto continue
+        end
+
         table.insert(self.objects, pot)
+        ::continue::
     end
 end
 
@@ -179,13 +212,11 @@ function Room:update(dt)
         -- remove entity from the table if health is <= 0
         if entity.health <= 0 and not entity.dead then
             entity.dead = true
-            entity.x = 500
-            entity.y = 500
             local spawingHeart = math.random(5) == 1 and true or false
             if spawingHeart then
                 local heart = GameObject(GAME_OBJECT_DEFS['heart'],
-                entity.x+4,
-                entity.y+4
+                entity.x + 4,
+                entity.y + 4
                 )
 
                 heart.onConsume = function(player, objects, k)
@@ -196,6 +227,8 @@ function Room:update(dt)
 
                 table.insert(self.objects, heart)
             end
+            entity.x = 500
+            entity.y = 500
         elseif not entity.dead then
             entity:processAI({room = self}, dt)
             entity:update(dt)
@@ -248,6 +281,7 @@ function Room:update(dt)
         for j, entity in pairs(self.entities) do
             if projectile:collides(entity) then
                 entity:damage(1)
+                gSounds['hit-enemy']:play()
                 -- entity.walkSpeed = 0
                 -- entity:changeAnimation('dead')
                 -- --entity:changeState('idle')
@@ -299,6 +333,7 @@ function Room:update(dt)
     end
 
     for k, hitThing in pairs(self.hitThings) do
+        gSounds['pot-shatter']:play()
         Timer.after(0.2, function ()
             hitThing.state = 'broken'
             Timer.after(0.2, function ()
