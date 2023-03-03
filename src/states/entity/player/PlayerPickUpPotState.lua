@@ -35,7 +35,7 @@ function PlayerPickUpPotState:init(player, dungeon)
         hitboxY = self.player.y + self.player.height
     end
 
-    -- separate hitbox for the player's sword; will only be active during this state
+    -- separate hitbox for the player's lift box; will only be active during this state
     self.liftHitbox = Hitbox(hitboxX, hitboxY, hitboxWidth, hitboxHeight)
 
     -- sword-left, sword-up, etc
@@ -44,18 +44,14 @@ function PlayerPickUpPotState:init(player, dungeon)
 end
 
 function PlayerPickUpPotState:enter(params)
-
-    -- restart sword swing sound for rapid swinging
-    -- TODO change sound to pick up sound
     gSounds['lift']:play()
 
-    -- restart sword swing animation
+    -- restart pickup animation
     self.player.currentAnimation:refresh()
 
 end
 
 function PlayerPickUpPotState:update(dt)
-    --TODO
     -- check if hitbox collides with any objects in the scene
     for k, object in pairs(self.dungeon.currentRoom.objects) do
         if object:collides(self.liftHitbox) and object.liftable then
@@ -68,7 +64,7 @@ function PlayerPickUpPotState:update(dt)
                 self.canTween = false
                 local y = 8
                 local x = 1
-                --local x = 8
+
                 if self.player.direction == 'up' then
                     y = 9
                     x = 0
@@ -81,6 +77,7 @@ function PlayerPickUpPotState:update(dt)
                     x = -1
                 end
                 
+                -- tween pickup to body then abouve head
                 Timer.tween(0.4, {
                     [self.player.potBeingCarried] = {x = self.player.x - x ,y = self.player.y - 4}
                 })
@@ -105,23 +102,10 @@ function PlayerPickUpPotState:update(dt)
             self.player:changeState('idle')
         end
     end
-    -- if love.keyboard.wasPressed('k') then
-    --     self.player:changeState('pick-up')
-    -- end
 end
 
 function PlayerPickUpPotState:render()
     local anim = self.player.currentAnimation
     love.graphics.draw(gTextures[anim.texture], gFrames[anim.texture][anim:getCurrentFrame()],
         math.floor(self.player.x - self.player.offsetX), math.floor(self.player.y - self.player.offsetY))
-
-    --
-    -- debug for player and hurtbox collision rects VV
-    --
-
-    -- love.graphics.setColor(1, 0, 1, 1)
-    -- love.graphics.rectangle('line', self.player.x, self.player.y, self.player.width, self.player.height)
-    -- love.graphics.rectangle('line', self.liftHitbox.x, self.liftHitbox.y,
-    --     self.liftHitbox.width, self.liftHitbox.height)
-    -- love.graphics.setColor(1, 1, 1, 1)
 end

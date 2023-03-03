@@ -28,7 +28,7 @@ function Projectile:init(direction, item, room)
 end
 
 function Projectile:update(dt)
-    --TODO adjust movement according to direction
+    -- adjust pot throw movement according to direction
     if self.direction == "left" then
         self.x = self.x - 90 * dt
     elseif self.direction == 'right'  then
@@ -38,7 +38,6 @@ function Projectile:update(dt)
     elseif self.direction == 'down'  then
         self.y = self.y + 90 * dt
     end
-
 end
 
 function Projectile:traveledTooFar(dt)
@@ -65,12 +64,4 @@ function Projectile:render(adjacentOffsetX, adjacentOffsetY)
     love.graphics.draw(gTextures[self.texture], gFrames[self.texture][self.states[
         self.state].frame or self.frame],
         math.floor(self.x + adjacentOffsetX), math.floor(self.y + adjacentOffsetY))
-
-    -- TODO need to delte these lines
-    -- love.graphics.setColor(1, 0, 1, 1)
-    -- love.graphics.rectangle('line', self.x, self.y, self.width, self.height)
-    -- love.graphics.setColor(1, 1, 1, 1)
-
-    -- love.graphics.print("X: ---> " ..tostring(self.x), 20, 20)
-    -- love.graphics.print("Y: ---> " ..tostring(self.y), 20, 60)
 end

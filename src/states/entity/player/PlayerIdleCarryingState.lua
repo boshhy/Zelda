@@ -19,11 +19,7 @@ function PlayerIdleCarryingState:update(dt)
     self.entity.potBeingCarried.x = self.entity.x
     self.entity.potBeingCarried.y = self.entity.y - 8
     
-    -- if love.keyboard.wasPressed('space') then
-    --     self.entity:changeState('swing-sword')
-    -- end
-
-    -- TODO change to throw animation
+    -- Change player state to idle and change pot to throw whan 'k' is pressed
     if love.keyboard.wasPressed('k') then
         self.entity.carrying = false
         self.entity.potBeingCarried.beingCarried = false

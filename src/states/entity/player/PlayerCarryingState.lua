@@ -11,7 +11,7 @@ function PlayerCarryingState:init(player, dungeon)
 end
 
 function PlayerCarryingState:update(dt)
-
+    -- Change player direction according to directional keyboard press
     if love.keyboard.isDown('left') then
         self.entity.direction = 'left'
         self.entity:changeAnimation('carrying-left')
@@ -30,16 +30,15 @@ function PlayerCarryingState:update(dt)
 
     EntityWalkState.update(self, dt)
 
+    -- Make pot follow the player and adjust y by one so it 'bobs' with player
     self.entity.potBeingCarried.x = self.entity.x
     if self.entity.currentAnimation.bob == true then
         self.entity.potBeingCarried.y = self.entity.y - 8
     else
         self.entity.potBeingCarried.y = self.entity.y - 9
     end
-    -- if love.keyboard.wasPressed('space') then
-    --     self.entity:changeState('swing-sword')
-    -- end
-    -- TODO change to throw animation
+
+    --chang player animation to wak and change pot to be thrown
     if love.keyboard.wasPressed('k') then
         self.entity.carrying = false
         self.entity.potBeingCarried.beingCarried = false
@@ -49,6 +48,7 @@ function PlayerCarryingState:update(dt)
         self.entity:changeState('walk')
     end
 
+    -- check if player collides with any solid objects so he doesnt walk through them
     for k, object in pairs(self.dungeon.currentRoom.objects) do
         if self.entity:collides(object) then
             if object.solid then

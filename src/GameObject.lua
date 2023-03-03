@@ -58,9 +58,4 @@ function GameObject:render(adjacentOffsetX, adjacentOffsetY)
             self.state].frame or self.frame],
             math.floor(self.x + adjacentOffsetX), math.floor(self.y + adjacentOffsetY))
     end
-
-    -- TODO Delete these lines
-    -- love.graphics.setColor(1, 0, 1, 1)
-    -- love.graphics.rectangle('line', self.x, self.y, self.width, self.height)
-    -- love.graphics.setColor(1, 1, 1, 1)
 end

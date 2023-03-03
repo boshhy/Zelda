@@ -37,3 +37,4 @@ end
 function StateMachine:processAI(params, dt)
 	self.current:processAI(params, dt)
 end
+

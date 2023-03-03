@@ -1,3 +1,4 @@
+-- used to store objects that have been hit
 
 HitObject = Class{}
 
@@ -24,10 +25,4 @@ function HitObject:render(adjacentOffsetX, adjacentOffsetY)
     love.graphics.draw(gTextures[self.texture], gFrames[self.texture][self.states[
         self.state].frame or self.frame],
         math.floor(self.x + adjacentOffsetX), math.floor(self.y + adjacentOffsetY))
-
-    -- TODO need to delte these lines
-    -- love.graphics.setColor(1, 0, 1, 1)
-    -- love.graphics.rectangle('line', self.x, self.y, self.width, self.height)
-    -- love.graphics.setColor(1, 1, 1, 1)
-
 end

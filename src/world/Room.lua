@@ -83,13 +83,14 @@ function Room:generateEntities()
 
         entity:changeState('walk')
         
+        -- dont spawn entities on top of each other
         for k, other in pairs(self.entities) do
             if entity:collides(other) then
                 goto continue
             end
         end
 
-
+        -- dont spawn entities on top of player
         if self.player:collides(entity) then
             goto continue
         end
@@ -128,7 +129,7 @@ function Room:generateObjects()
     -- add to list of objects in scene (only one switch for now)
     table.insert(self.objects, switch)
 
-    -- insert pot into map
+    -- insert  up to 10 pots into map
     for i = 1, 10 do
         local pot = GameObject(
             GAME_OBJECT_DEFS['pot'],
@@ -138,18 +139,21 @@ function Room:generateObjects()
                         VIRTUAL_HEIGHT - (VIRTUAL_HEIGHT - MAP_HEIGHT * TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 16)
         )
 
+        -- dont spawn pot on top of onother object
         for k, object in pairs(self.objects) do
             if pot:collides(object) then
                 goto continue
             end
         end
 
+        -- dont spawn pot on top of an entity
         for k, entity in pairs(self.entities) do
             if pot:collides(entity) then
                 goto continue
             end
         end
 
+        -- dont spawn pot on top of the player
         if self.player:collides(pot) then
             goto continue
         end
@@ -213,12 +217,14 @@ function Room:update(dt)
         if entity.health <= 0 and not entity.dead then
             entity.dead = true
             local spawingHeart = math.random(5) == 1 and true or false
+            -- spawn a heart where entity died
             if spawingHeart then
                 local heart = GameObject(GAME_OBJECT_DEFS['heart'],
                 entity.x + 4,
                 entity.y + 4
                 )
 
+                -- when heart is consumed give player 2 health
                 heart.onConsume = function(player, objects, k)
                     gSounds['pickup']:play()
                     player:heal(2)
@@ -228,6 +234,7 @@ function Room:update(dt)
 
                 table.insert(self.objects, heart)
             end
+            -- move entity from map so we dont have an 'invisible' dead entity
             entity.x = 500
             entity.y = 500
         elseif not entity.dead then
@@ -247,12 +254,6 @@ function Room:update(dt)
         end
     end
 
-    -- for k, entity in pairs(self.entities) do        
-    --     if entity.dead then
-    --         table.remove(self.entities, k)
-    --     end
-    -- end
-
     for k, object in pairs(self.objects) do
         object:update(dt)
 
@@ -265,6 +266,8 @@ function Room:update(dt)
         end
     end
 
+    -- if the pot was let go, add it to projectile table and remove
+    -- from objects table
     for k, object in pairs(self.objects) do
         if object.thrown then
             project = Projectile(
@@ -277,25 +280,20 @@ function Room:update(dt)
         end
     end
 
+    -- check to see if projectile hits anything
     for k, projectile in pairs(self.projectiles) do
         projectile:update(dt)
+
+        -- if projectile hits entity do 1 damage to entity
         for j, entity in pairs(self.entities) do
             if projectile:collides(entity) then
                 entity:damage(1)
                 gSounds['hit-enemy']:play()
-                -- entity.walkSpeed = 0
-                -- entity:changeAnimation('dead')
-                -- --entity:changeState('idle')
-                -- Timer.after(0.4, function ()
-                --     entity.dead = true
-                --     entity.x = 500
-                --     entity.y = 500
-                -- end)
-                --table.insert(self.hitEntities, j)
                 projectile.hitSomething = true
             end
         end
         
+        -- if projectile hits a another objects, break both
         for l, object in pairs(self.objects) do
             if projectile:collides(object) and object.type ~= 'switch' then
                 object.state = 'half'
@@ -309,10 +307,12 @@ function Room:update(dt)
             end
         end
 
+        -- check to see if projectile has traveled 4 blocks
         if projectile:traveledTooFar(dt) then
             projectile.hitSomething = true
         end
 
+        -- if projectile hit something then start breaking animation
         if projectile.hitSomething then
             projectile.state = 'half'
             local hit = HitObject(
@@ -325,14 +325,17 @@ function Room:update(dt)
 
     end
 
+    -- remove all destroyed projectiles
     for i = #self.destroyedProjectiles, 1, -1 do
         table.remove(self.projectiles, self.destroyedProjectiles[i])
     end
 
+    -- remove all hit objects
     for i = #self.hitObjects, 1, -1 do
         table.remove(self.objects, self.hitObjects[i])
     end
 
+    -- finish breaking pot animation
     for k, hitThing in pairs(self.hitThings) do
         gSounds['pot-shatter']:play()
         Timer.after(0.2, function ()
@@ -343,7 +346,6 @@ function Room:update(dt)
         end)
     end 
 
-    -- self.hitEntities = {}
     self.hitObjects = {}
     self.destroyedProjectiles = {}
 end
@@ -416,28 +418,4 @@ function Room:render()
     end
 
     love.graphics.setStencilTest()
-
-    --
-    -- DEBUG DRAWING OF STENCIL RECTANGLES
-    --
-
-    -- love.graphics.setColor(255, 0, 0, 100)
-    
-    -- -- left
-    -- love.graphics.rectangle('fill', -TILE_SIZE - 6, MAP_RENDER_OFFSET_Y + (MAP_HEIGHT / 2) * TILE_SIZE - TILE_SIZE,
-    -- TILE_SIZE * 2 + 6, TILE_SIZE * 2)
-
-    -- -- right
-    -- love.graphics.rectangle('fill', MAP_RENDER_OFFSET_X + (MAP_WIDTH * TILE_SIZE),
-    --     MAP_RENDER_OFFSET_Y + (MAP_HEIGHT / 2) * TILE_SIZE - TILE_SIZE, TILE_SIZE * 2 + 6, TILE_SIZE * 2)
-
-    -- -- top
-    -- love.graphics.rectangle('fill', MAP_RENDER_OFFSET_X + (MAP_WIDTH / 2) * TILE_SIZE - TILE_SIZE,
-    --     -TILE_SIZE - 6, TILE_SIZE * 2, TILE_SIZE * 2 + 12)
-
-    -- --bottom
-    -- love.graphics.rectangle('fill', MAP_RENDER_OFFSET_X + (MAP_WIDTH / 2) * TILE_SIZE - TILE_SIZE,
-    --     VIRTUAL_HEIGHT - TILE_SIZE - 6, TILE_SIZE * 2, TILE_SIZE * 2 + 12)
-    
-    -- love.graphics.setColor(255, 255, 255, 255)
 end
